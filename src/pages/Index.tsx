@@ -67,9 +67,7 @@ const Index = () => {
     return result;
   }, [pois, filters]);
 
-  const favoritePois = useMemo(() => {
-    return pois.filter(poi => isFavorite(poi.id));
-  }, [pois, favorites]);
+
 
   const handleRefresh = () => {
     refreshLocation();
@@ -138,24 +136,24 @@ const Index = () => {
     }
 
     if (activeTab === 'favorites') {
-      if (favoritePois.length === 0) {
-        return <EmptyState type="no-favorites" />;
-      }
-      return (
-        <div className="space-y-3 px-4 py-4">
-          {favoritePois.map((poi, index) => (
-            <POICard
-              key={poi.id}
-              poi={poi}
-              isFavorite={true}
-              onToggleFavorite={() => toggleFavorite(poi.id)}
-              onSelect={() => setSelectedPoi(poi)}
-              index={index}
-            />
-          ))}
-        </div>
-      );
-    }
+  if (favorites.length === 0) {
+    return <EmptyState type="no-favorites" />;
+  }
+  return (
+    <div className="space-y-3 px-4 py-4">
+      {favorites.map((poi, index) => (
+        <POICard
+          key={poi.id}
+          poi={poi}
+          isFavorite={true}
+          onToggleFavorite={() => toggleFavorite(poi)}
+          onSelect={() => setSelectedPoi(poi)}
+          index={index}
+        />
+      ))}
+    </div>
+  );
+}
 
     if (filteredPois.length === 0) {
       return <EmptyState type="no-results" />;
@@ -168,7 +166,7 @@ const Index = () => {
             key={poi.id}
             poi={poi}
             isFavorite={isFavorite(poi.id)}
-            onToggleFavorite={() => toggleFavorite(poi.id)}
+            onToggleFavorite={() => toggleFavorite(poi)}
             onSelect={() => setSelectedPoi(poi)}
             index={index}
           />
@@ -244,7 +242,7 @@ const Index = () => {
         <POIDetail
           poi={selectedPoi}
           isFavorite={isFavorite(selectedPoi.id)}
-          onToggleFavorite={() => toggleFavorite(selectedPoi.id)}
+          onToggleFavorite={() => toggleFavorite(selectedPoi)}
           onClose={() => setSelectedPoi(null)}
         />
       )}

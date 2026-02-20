@@ -1,37 +1,53 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import type { POI } from '../types/poi';
 
-const FAVORITES_KEY = 'poi_favorites';
+const STORAGE_KEY = 'nearby-explorer-favorites';
 
 export function useFavorites() {
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<POI[]>([]);
 
+  // Load favorites from localStorage on mount
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(FAVORITES_KEY);
+      const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        setFavorites(new Set(JSON.parse(stored)));
+        const parsed = JSON.parse(stored);
+        setFavorites(parsed);
       }
-    } catch (err) {
-      console.error('Failed to load favorites:', err);
+    } catch (error) {
+      console.error('Failed to load favorites:', error);
     }
   }, []);
 
-  const toggleFavorite = useCallback((poiId: string) => {
-    setFavorites(prev => {
-      const next = new Set(prev);
-      if (next.has(poiId)) {
-        next.delete(poiId);
-      } else {
-        next.add(poiId);
-      }
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify([...next]));
-      return next;
-    });
-  }, []);
-
-  const isFavorite = useCallback((poiId: string) => {
-    return favorites.has(poiId);
+  // Save to localStorage whenever favorites change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+    } catch (error) {
+      console.error('Failed to save favorites:', error);
+    }
   }, [favorites]);
 
-  return { favorites, toggleFavorite, isFavorite };
+  const toggleFavorite = (poi: POI) => {
+    setFavorites(prev => {
+      const exists = prev.find(p => p.id === poi.id);
+      if (exists) {
+        // Remove from favorites
+        return prev.filter(p => p.id !== poi.id);
+      } else {
+        // Add to favorites
+        return [...prev, poi];
+      }
+    });
+  };
+
+  const isFavorite = (id: string): boolean => {
+    return favorites.some(poi => poi.id === id);
+  };
+
+  return {
+    favorites,
+    toggleFavorite,
+    isFavorite,
+  };
 }
