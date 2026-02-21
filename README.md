@@ -1,73 +1,91 @@
-# Welcome to your Lovable project
+# Nearby Explorer
 
-## Project info
+A mobile application for discovering nearby points of interest using GPS location and OpenStreetMap data.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- 🗺️ Real-time location detection using device GPS
+- 🔍 Search for any location worldwide
+- 📍 Discover nearby restaurants, cafes, hotels, and more
+- ⭐ Save favorite places
+- 🎯 Filter by category and distance
+- 📱 Native mobile app (Android) using Capacitor
 
-There are several ways of editing your application.
+## Technologies
 
-**Use Lovable**
+- **Frontend:** React 18 with TypeScript
+- **Mobile:** Capacitor 8
+- **UI Framework:** shadcn/ui + Tailwind CSS
+- **API:** OpenStreetMap Overpass API
+- **Build Tool:** Vite
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 18+ and npm
+- (For Android) Android Studio
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
+```bash
+# Install dependencies
+npm install
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Run development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Visit `http://localhost:5173/`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Android
+```bash
+# Build web app
+npm run build
 
-**Use GitHub Codespaces**
+# Sync to Capacitor
+npx cap sync
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Open in Android Studio
+npx cap open android
+```
 
-## What technologies are used for this project?
+## Project Structure
+```
+src/
+├── components/     # UI components
+├── hooks/          # Custom React hooks
+├── pages/          # Main pages
+├── services/       # API services
+└── types/          # TypeScript types
+```
 
-This project is built with:
+## Features Implementation
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Location Search
+Users can search for any city or address worldwide using the Nominatim geocoding API.
 
-## How can I deploy this project?
+### Favorites System
+Favorites are stored locally using localStorage and persist across sessions.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Multi-endpoint API Fallback
+Implements a fallback system across three Overpass API endpoints for high reliability.
 
-## Can I connect a custom domain to my Lovable project?
+## Academic Project
 
-Yes, you can!
+Developed as part of "Webanwendungen" course  
+Winter Semester 2025/26
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🙏 Acknowledgments
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- OpenStreetMap contributors for POI data
+- shadcn/ui for the component library
+- React, TypeScript, and Capacitor communities
+- Initial project scaffolding assisted by AI tools
+
+**Team:**
+- Saleem Omar saleem.omar@hs-osnabrueck.de
+- Zaid Shawakfeh zaid.shawakfeh@hs-osnabrueck.de
+
+## License
+
+This project was developed for educational purposes.

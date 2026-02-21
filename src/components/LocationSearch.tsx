@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Search, MapPin, Loader2 } from 'lucide-react';
-import { Input } from '../components/ui/input';
-import { Button } from '../components/ui/button';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
 
 interface LocationSearchProps {
   onLocationSelect: (lat: number, lon: number, name: string) => void;
@@ -14,9 +14,18 @@ export function LocationSearch({ onLocationSelect, onUseCurrentLocation, isLoadi
   const [searching, setSearching] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [lastSearchTime, setLastSearchTime] = useState(0);  // ← MOVED INSIDE COMPONENT
 
   const searchLocation = async () => {
     if (!searchQuery.trim()) return;
+    
+    // Rate limit: Wait 1 second between searches
+    const now = Date.now();
+    if (now - lastSearchTime < 1000) {
+      console.log('⏰ Please wait 1 second between searches');
+      return;
+    }
+    setLastSearchTime(now);
     
     setSearching(true);
     try {
@@ -40,7 +49,22 @@ export function LocationSearch({ onLocationSelect, onUseCurrentLocation, isLoadi
   const handleResultClick = (result: any) => {
     const lat = parseFloat(result.lat);
     const lon = parseFloat(result.lon);
-    const name = result.display_name.split(',')[0]; // Just city name
+    
+    // Smart name extraction
+    const parts = result.display_name.split(',').map(p => p.trim());
+    let name = parts[0];
+    
+    if (parts.length >= 2) {
+      if (/^\d+$/.test(parts[0])) {
+        name = parts[1];
+      } else if (parts[0].length < 30) {
+        name = `${parts[0]}, ${parts[1]}`;
+      }
+    }
+    
+    if (name.length > 40) {
+      name = name.substring(0, 37) + '...';
+    }
     
     onLocationSelect(lat, lon, name);
     setShowResults(false);

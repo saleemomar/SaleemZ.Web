@@ -3,7 +3,7 @@ import { RefreshCw, SlidersHorizontal, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useGeolocation } from '../hooks/useGeolocation';
 import { useFavorites } from '../hooks/useFavorites';
-import { fetchNearbyPOIs } from '../services/poiService';
+import { fetchNearbyPOIs, calculateDistance } from '../services/poiService';
 import { BottomNav } from '../components/BottomNav';
 import { POICard } from '../components/POICard';
 import { POIDetail } from '../components/POIDetail';
@@ -135,18 +135,32 @@ const Index = () => {
       return <ErrorState type="api" message={apiError} onRetry={loadPOIs} />;
     }
 
-    if (activeTab === 'favorites') {
+if (activeTab === 'favorites') {
   if (favorites.length === 0) {
     return <EmptyState type="no-favorites" />;
   }
+  
+  // Recalculate distances based on current location
+  const favoritesWithCurrentDistance = location 
+    ? favorites.map(poi => ({
+        ...poi,
+        distance: calculateDistance(
+          location.lat,
+          location.lon,
+          poi.lat,
+          poi.lon
+        )
+      }))
+    : favorites;
+  
   return (
     <div className="space-y-3 px-4 py-4">
-      {favorites.map((poi, index) => (
+      {favoritesWithCurrentDistance.map((poi, index) => (
         <POICard
           key={poi.id}
           poi={poi}
           isFavorite={true}
-          onToggleFavorite={() => toggleFavorite(poi)}
+          onToggleFavorite={() => toggleFavorite(favorites.find(f => f.id === poi.id)!)}
           onSelect={() => setSelectedPoi(poi)}
           index={index}
         />
